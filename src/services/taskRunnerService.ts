@@ -1,17 +1,21 @@
 import { exec } from 'child_process';
 import shortId from 'shortid';
 import { ConsoleLine } from '../models/consoleLine';
-
-const defaultOptions: TaskRunnerOptions = {
-  shell: 'C:\\Program Files\\git\\usr\\bin\\bash.exe',
-};
+import storageService from './storageService';
 
 export type TaskRunnerOptions = {
   shell?: string;
 };
 
 class TaskRunnerService {
-  constructor(private options: TaskRunnerOptions) {}
+  private options: TaskRunnerOptions;
+
+  constructor() {
+    const settings = storageService.getSettings();
+    this.options = {
+      shell: settings.shell,
+    };
+  }
 
   private execute(
     command: string,
@@ -40,4 +44,4 @@ class TaskRunnerService {
   }
 }
 
-export default new TaskRunnerService(defaultOptions);
+export default new TaskRunnerService();

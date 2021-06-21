@@ -6,6 +6,7 @@ module.exports = {
     'react/prop-types': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     'react/no-array-index-key': 'off',
+    'class-methods-use-this': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
