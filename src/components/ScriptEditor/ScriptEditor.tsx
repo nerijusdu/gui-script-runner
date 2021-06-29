@@ -1,25 +1,31 @@
-import { Flex } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import shortid from 'shortid';
 import { ScriptTask } from '../../models/scriptTask';
 import storageService from '../../services/storageService';
-import TaskConsole from './TaskConsole';
 import TaskList from '../TaskList';
+import ScriptForm from './ScriptForm';
 
-const TaskRunner: React.FC = () => {
+const ScriptEditor: React.FC = () => {
+  const [, reload] = useState('');
   const [selectedTask, setSelectedTask] = useState<ScriptTask>();
   const tasksFromMemory = storageService.getTasks();
-
   return (
-    <Flex w="100%">
+    <>
       <TaskList
         tasks={tasksFromMemory}
         onTaskSelect={setSelectedTask}
         selectedTaskId={selectedTask?.id}
-        executable
+        onAddClick={() => setSelectedTask(undefined)}
       />
-      <TaskConsole currentTaskId={selectedTask?.id} />
-    </Flex>
+      <ScriptForm
+        task={selectedTask}
+        onUpdate={() => {
+          reload(shortid());
+          setSelectedTask(undefined);
+        }}
+      />
+    </>
   );
 };
 
-export default TaskRunner;
+export default ScriptEditor;

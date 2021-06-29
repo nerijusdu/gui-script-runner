@@ -1,28 +1,58 @@
 import { ComponentWithAs, Flex, IconProps } from '@chakra-ui/react';
-import { CheckCircleIcon } from '@chakra-ui/icons';
+import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons';
 import React from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
-const Sidebar: React.FC = () => (
-  <Flex
-    w="50px"
-    h="100vh"
-    bg="blue.900"
-    color="white"
-    flexDir="column"
-    align="center"
-    pt={4}
-    boxShadow="dark-lg"
-  >
-    <MenuItem icon={CheckCircleIcon} isSelected />
-  </Flex>
-);
+const routes = [
+  {
+    icon: CheckCircleIcon,
+    url: '/',
+  },
+  {
+    icon: EditIcon,
+    url: '/editor',
+  },
+];
+
+const Sidebar: React.FC = () => {
+  const location = useLocation();
+  const history = useHistory();
+
+  return (
+    <Flex
+      w="50px"
+      h="100vh"
+      bg="blue.900"
+      color="white"
+      flexDir="column"
+      align="center"
+      pt={4}
+      boxShadow="dark-lg"
+      zIndex={1}
+    >
+      {routes.map((x) => (
+        <MenuItem
+          key={x.url}
+          icon={x.icon}
+          onClick={() => history.push(x.url)}
+          isSelected={location.pathname === x.url}
+        />
+      ))}
+    </Flex>
+  );
+};
 
 export type MenuItemProps = {
   icon: ComponentWithAs<'svg', IconProps>;
   isSelected?: boolean;
+  onClick: () => void;
 };
 
-const MenuItem: React.FC<MenuItemProps> = ({ icon: Icon, isSelected }) => {
+const MenuItem: React.FC<MenuItemProps> = ({
+  icon: Icon,
+  isSelected,
+  onClick,
+}) => {
   return (
     <Flex
       justify="center"
@@ -30,8 +60,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon: Icon, isSelected }) => {
       w="100%"
       py={2}
       cursor="pointer"
+      onClick={onClick}
     >
-      <Icon boxSize={8} />
+      <Icon boxSize={6} />
     </Flex>
   );
 };

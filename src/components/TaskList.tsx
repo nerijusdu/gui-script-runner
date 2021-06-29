@@ -1,10 +1,10 @@
 import { ArrowRightIcon } from '@chakra-ui/icons';
 import { IconButton, List } from '@chakra-ui/react';
 import React from 'react';
-import { ScriptTask } from '../../models/scriptTask';
-import taskRunnerService from '../../services/taskRunnerService';
-import { useSetTaskOutputLine } from '../../state/tasksOutputState';
-import TaskItem from './TaskItem';
+import { ScriptTask } from '../models/scriptTask';
+import taskRunnerService from '../services/taskRunnerService';
+import { useSetTaskOutputLine } from '../state/tasksOutputState';
+import TaskItem from './TaskRunner/TaskItem';
 
 // TODO: icons that indicate script status
 
@@ -12,12 +12,16 @@ export type TaskListProps = {
   onTaskSelect: (task: ScriptTask) => void;
   tasks: ScriptTask[];
   selectedTaskId?: string;
+  executable?: boolean;
+  onAddClick?: () => void;
 };
 
 const TaskList: React.FC<TaskListProps> = ({
   tasks,
   onTaskSelect,
   selectedTaskId,
+  executable,
+  onAddClick,
 }) => {
   const { addNewLine, clearLines } = useSetTaskOutputLine();
 
@@ -30,7 +34,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
   return (
     <>
-      <List bg="blue.700" py={4} w="500px" fontSize="lg">
+      <List bg="blue.800" py={4} w="500px" fontSize="lg">
         {tasks.map((task) => (
           <TaskItem
             key={task.id}
@@ -38,16 +42,25 @@ const TaskList: React.FC<TaskListProps> = ({
             onClick={() => onTaskSelect(task)}
             isSelected={selectedTaskId === task.id}
           >
-            <IconButton
-              onClick={() => executeTask(task)}
-              bg="transparent"
-              _hover={{ bg: 'cyan.800' }}
-              icon={<ArrowRightIcon />}
-              aria-label="run task"
-              isRound
-            />
+            {executable && (
+              <IconButton
+                onClick={() => executeTask(task)}
+                bg="transparent"
+                _hover={{ bg: 'cyan.800' }}
+                icon={<ArrowRightIcon />}
+                aria-label="run task"
+                isRound
+              />
+            )}
           </TaskItem>
         ))}
+        {onAddClick && (
+          <TaskItem
+            task={{ id: '', name: '+ Add New', script: '' }}
+            isSelected={selectedTaskId === undefined}
+            onClick={onAddClick}
+          />
+        )}
       </List>
     </>
   );

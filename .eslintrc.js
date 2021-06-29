@@ -7,6 +7,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     'react/no-array-index-key': 'off',
     'class-methods-use-this': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

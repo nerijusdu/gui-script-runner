@@ -4,7 +4,6 @@ import { ScriptTask } from '../models/scriptTask';
 
 type Settings = {
   shell?: string;
-  tasks: ScriptTask[];
 };
 
 const storageDir = `${os.homedir()}/gui-script-runner`;
@@ -32,20 +31,59 @@ class StorageService {
     return this.tasks;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private loadFile<T>(path: string, defaultValue?: any): T {
+  saveTask(task: ScriptTask) {
+    if (!this.tasks) {
+      // eslint-disable-next-line no-console
+      console.error('Tasks array is not initialized!?!?!?!');
+      return;
+    }
+
+    const index = this.tasks.findIndex((x) => x.id === task.id);
+    if (index !== -1) {
+      this.tasks[index] = task;
+    } else {
+      this.tasks.push(task);
+    }
+
+    this.saveToFile<ScriptTask[]>(tasksPath, this.tasks!);
+  }
+
+  deleteTask(id: string) {
+    if (!this.tasks) {
+      // eslint-disable-next-line no-console
+      console.error('Tasks array is not initialized!?!?!?!');
+      return;
+    }
+
+    const index = this.tasks.findIndex((x) => x.id === id);
+    this.tasks = [
+      ...this.tasks.slice(0, index),
+      ...this.tasks.slice(index + 1),
+    ];
+
+    this.saveToFile<ScriptTask[]>(tasksPath, this.tasks!);
+  }
+
+  private saveToFile<T>(path: string, value: T) {
+    this.ensureFileExists(path, value, true);
+  }
+
+  private loadFile<T>(path: string, defaultValue?: T): T {
     this.ensureFileExists(path, defaultValue);
     const buffer = fs.readFileSync(path);
     return JSON.parse(buffer.toString());
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ensureFileExists(path: string, defaultContent: any) {
+  private ensureFileExists<T>(
+    path: string,
+    defaultContent?: T,
+    overwrite?: boolean
+  ) {
     if (!fs.existsSync(storageDir)) {
       fs.mkdirSync(storageDir);
     }
 
-    if (!fs.existsSync(path)) {
+    if (!fs.existsSync(path) || overwrite) {
       const stream = fs.createWriteStream(path);
       stream.write(JSON.stringify(defaultContent));
       stream.close();

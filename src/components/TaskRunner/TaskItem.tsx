@@ -19,12 +19,11 @@ const TaskItem: React.FC<TaskItemProps> = ({
     alignItems="center"
     justifyContent="space-between"
     _hover={{ bg: 'cyan.700' }}
-    height="50px"
     cursor="pointer"
     pl={4}
-    bg={isSelected ? 'cyan.700' : 'blue.700'}
+    bg={isSelected ? 'cyan.700' : 'blue.800'}
     borderBottom="1px"
-    borderColor="blue.600"
+    borderColor="blue.700"
     onClick={onClick}
   >
     {task.name}
