@@ -1,5 +1,5 @@
-import { ArrowRightIcon } from '@chakra-ui/icons';
-import { IconButton, List } from '@chakra-ui/react';
+import { ArrowRightIcon, CloseIcon } from '@chakra-ui/icons';
+import { Flex, IconButton, List } from '@chakra-ui/react';
 import React from 'react';
 import { ScriptTask } from '../models/scriptTask';
 import taskRunnerService from '../services/taskRunnerService';
@@ -27,7 +27,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
   const executeTask = (task: ScriptTask) => {
     clearLines(task.id);
-    taskRunnerService.executeTask(task.script, (line) =>
+    taskRunnerService.executeTask(task.script, task.id, (line) =>
       addNewLine(task.id, line)
     );
   };
@@ -43,14 +43,24 @@ const TaskList: React.FC<TaskListProps> = ({
             isSelected={selectedTaskId === task.id}
           >
             {executable && (
-              <IconButton
-                onClick={() => executeTask(task)}
-                bg="transparent"
-                _hover={{ bg: 'cyan.800' }}
-                icon={<ArrowRightIcon />}
-                aria-label="run task"
-                isRound
-              />
+              <Flex>
+                <IconButton
+                  onClick={() => executeTask(task)}
+                  bg="transparent"
+                  _hover={{ bg: 'cyan.800' }}
+                  icon={<ArrowRightIcon />}
+                  aria-label="run task"
+                  isRound
+                />
+                <IconButton
+                  onClick={() => taskRunnerService.killTask(task.id)}
+                  bg="transparent"
+                  _hover={{ bg: 'cyan.800' }}
+                  icon={<CloseIcon />}
+                  aria-label="kill task"
+                  isRound
+                />
+              </Flex>
             )}
           </TaskItem>
         ))}
