@@ -63,7 +63,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
   return (
     <>
-      <List bg="blue.800" py={4} w="500px" fontSize="lg">
+      <List bg="blue.800" py={4} w="500px" fontSize="lg" boxShadow="dark-lg">
         {tasks.map((task) => (
           <TaskItem
             key={task.id}

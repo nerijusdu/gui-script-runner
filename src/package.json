@@ -2,7 +2,7 @@
   "name": "gui-script-runner",
   "productName": "ScriptRunner",
   "description": "Small GUI application to run your most used scripts with a single click",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./main.prod.js",
   "author": {
     "name": "Nerijus Dulke",

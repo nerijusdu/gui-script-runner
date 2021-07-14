@@ -1,5 +1,5 @@
 import { ComponentWithAs, Flex, IconProps } from '@chakra-ui/react';
-import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons';
+import { CheckCircleIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -11,6 +11,10 @@ const routes = [
   {
     icon: EditIcon,
     url: '/editor',
+  },
+  {
+    icon: SettingsIcon,
+    url: '/settings',
   },
 ];
 

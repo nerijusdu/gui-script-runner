@@ -62,65 +62,67 @@ const ScriptForm: React.FC<ScriptFormProps> = ({ task, onUpdate }) => {
   };
 
   return (
-    <Flex w="100%" flexDir="column" padding={2}>
-      <Stack pb={4}>
-        <Input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Textarea
-          placeholder="Script"
-          value={script}
-          onChange={(e) => setScript(e.target.value)}
-        />
-        <Stack w="50%">
-          <Text>Argument Presets:</Text>
-          {argPresets.map((text, i) => (
-            <InputGroup key={i}>
-              <Input
-                placeholder={`Argument preset #${i + 1}`}
-                value={text}
-                onChange={(e) =>
-                  setArgPresets((prev) => {
-                    const newItems = [...prev];
-                    newItems[i] = e.target.value;
-                    return newItems;
-                  })
-                }
-              />
-              <InputRightElement>
-                <IconButton
-                  icon={<CloseIcon />}
-                  aria-label="remove argument preset"
-                  _hover={{ bg: 'transparent' }}
-                  bg="transparent"
-                  onClick={() =>
-                    setArgPresets((prev) => [
-                      ...prev.slice(0, i),
-                      ...prev.slice(i + 1),
-                    ])
+    <Flex w="100%" justifyContent="center" mt={2}>
+      <Flex w="100%" maxW="800px" flexDir="column" padding={2}>
+        <Stack pb={4}>
+          <Input
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Textarea
+            placeholder="Script"
+            value={script}
+            onChange={(e) => setScript(e.target.value)}
+          />
+          <Stack w="50%">
+            <Text>Argument Presets:</Text>
+            {argPresets.map((text, i) => (
+              <InputGroup key={i}>
+                <Input
+                  placeholder={`Argument preset #${i + 1}`}
+                  value={text}
+                  onChange={(e) =>
+                    setArgPresets((prev) => {
+                      const newItems = [...prev];
+                      newItems[i] = e.target.value;
+                      return newItems;
+                    })
                   }
                 />
-              </InputRightElement>
-            </InputGroup>
-          ))}
-          <Button
-            colorScheme="cyan"
-            onClick={() => setArgPresets((prev) => [...prev, ''])}
-          >
-            Add new preset
+                <InputRightElement>
+                  <IconButton
+                    icon={<CloseIcon />}
+                    aria-label="remove argument preset"
+                    _hover={{ bg: 'transparent' }}
+                    bg="transparent"
+                    onClick={() =>
+                      setArgPresets((prev) => [
+                        ...prev.slice(0, i),
+                        ...prev.slice(i + 1),
+                      ])
+                    }
+                  />
+                </InputRightElement>
+              </InputGroup>
+            ))}
+            <Button
+              colorScheme="cyan"
+              onClick={() => setArgPresets((prev) => [...prev, ''])}
+            >
+              Add new preset
+            </Button>
+          </Stack>
+        </Stack>
+        <Stack direction="row-reverse" align="center">
+          <Button colorScheme="green" onClick={save} w="100%">
+            Save
+          </Button>
+          <Button colorScheme="red" onClick={remove} w="100%">
+            Delete
           </Button>
         </Stack>
-      </Stack>
-      <Stack direction="row-reverse" align="center">
-        <Button colorScheme="green" onClick={save} w="100%">
-          Save
-        </Button>
-        <Button colorScheme="red" onClick={remove} w="100%">
-          Delete
-        </Button>
-      </Stack>
+      </Flex>
     </Flex>
   );
 };

@@ -1,10 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import { ScriptTask } from '../models/scriptTask';
-
-type Settings = {
-  shell?: string;
-};
+import { Settings } from '../models/settings';
 
 const storageDir = `${os.homedir()}/gui-script-runner`;
 const settingsPath = `${storageDir}/settings.json`;
@@ -46,6 +43,10 @@ class StorageService {
     }
 
     this.saveToFile<ScriptTask[]>(tasksPath, this.tasks!);
+  }
+
+  saveSettings(settings: Settings) {
+    this.saveToFile<Settings>(settingsPath, settings);
   }
 
   deleteTask(id: string) {
