@@ -1,6 +1,17 @@
 import { ArrowRightIcon, CloseIcon } from '@chakra-ui/icons';
-import { Flex, IconButton, List } from '@chakra-ui/react';
-import React from 'react';
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  Button,
+  Flex,
+  IconButton,
+  List,
+  Stack,
+} from '@chakra-ui/react';
+import React, { useState } from 'react';
 import { ScriptTask } from '../models/scriptTask';
 import taskRunnerService from '../services/taskRunnerService';
 import { useSetTaskOutputLine } from '../state/tasksOutputState';
@@ -23,13 +34,31 @@ const TaskList: React.FC<TaskListProps> = ({
   executable,
   onAddClick,
 }) => {
+  const cancelRef = React.useRef(null);
   const { addNewLine, clearLines } = useSetTaskOutputLine();
+  const [focusedTask, setFocusedTask] = useState<ScriptTask | undefined>();
 
-  const executeTask = (task: ScriptTask) => {
+  const executeTask = (task: ScriptTask, argPresetIndex?: number) => {
     clearLines(task.id);
-    taskRunnerService.executeTask(task.script, task.id, (line) =>
+    const command =
+      argPresetIndex !== undefined
+        ? `${task.script} ${task.argPresets[argPresetIndex]}`
+        : task.script;
+
+    if (focusedTask) {
+      setFocusedTask(undefined);
+    }
+    taskRunnerService.executeTask(command, task.id, (line) =>
       addNewLine(task.id, line)
     );
+  };
+
+  const onRunTaskClick = (task: ScriptTask) => {
+    if (task.argPresets.length) {
+      setFocusedTask(task);
+    } else {
+      executeTask(task);
+    }
   };
 
   return (
@@ -45,7 +74,7 @@ const TaskList: React.FC<TaskListProps> = ({
             {executable && (
               <Flex>
                 <IconButton
-                  onClick={() => executeTask(task)}
+                  onClick={() => onRunTaskClick(task)}
                   bg="transparent"
                   _hover={{ bg: 'cyan.800' }}
                   icon={<ArrowRightIcon />}
@@ -66,12 +95,45 @@ const TaskList: React.FC<TaskListProps> = ({
         ))}
         {onAddClick && (
           <TaskItem
-            task={{ id: '', name: '+ Add New', script: '' }}
+            task={{ id: '', name: '+ Add New', script: '', argPresets: [] }}
             isSelected={selectedTaskId === undefined}
             onClick={onAddClick}
           />
         )}
       </List>
+      <AlertDialog
+        isOpen={!!focusedTask}
+        onClose={() => setFocusedTask(undefined)}
+        leastDestructiveRef={cancelRef}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>Select argument preset</AlertDialogHeader>
+          <AlertDialogBody>
+            <Stack>
+              {focusedTask?.argPresets.map((preset, index) => (
+                <Button
+                  key={index}
+                  onClick={() => executeTask(focusedTask!, index)}
+                >
+                  {preset}
+                </Button>
+              ))}
+              <Button onClick={() => executeTask(focusedTask!)}>
+                Run without arguments
+              </Button>
+            </Stack>
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button
+              colorScheme="red"
+              ref={cancelRef}
+              onClick={() => setFocusedTask(undefined)}
+            >
+              Cancel
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
