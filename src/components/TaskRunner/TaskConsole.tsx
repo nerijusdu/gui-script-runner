@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTaskOutput } from '../../state/tasksOutputState';
 
 export type TaskConsoleProps = {
@@ -8,6 +8,13 @@ export type TaskConsoleProps = {
 
 const TaskConsole: React.FC<TaskConsoleProps> = ({ currentTaskId }) => {
   const lines = useTaskOutput(currentTaskId);
+  const messagesEndRef = React.createRef<HTMLDivElement>();
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messagesEndRef]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [lines, scrollToBottom]);
 
   return (
     <Flex
@@ -23,6 +30,7 @@ const TaskConsole: React.FC<TaskConsoleProps> = ({ currentTaskId }) => {
           {line.text}
         </Text>
       ))}
+      <div ref={messagesEndRef} />
     </Flex>
   );
 };
